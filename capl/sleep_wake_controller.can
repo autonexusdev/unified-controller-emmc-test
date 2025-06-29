@@ -63,7 +63,7 @@ on timer Timer_Wake_Duration
   setTimer(Timer_Sleep_Duration, 2);      // Prepare for next sleep cycle
 
   // Execute Python script (runs via ADB) to check eMMC mount on Linux-based TBox
-  sysExecCmd(" python adb_emmc_mount_check.py & exit", "");
+  sysExecCmd(" python emmc_mount_check & exit", "");
 }
 
 // Start new sleep/wake cycle
