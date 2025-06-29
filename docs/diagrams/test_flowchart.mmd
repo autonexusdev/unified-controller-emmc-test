@@ -1,0 +1,15 @@
+### Test Procedure Flowchart
+```mermaid
+flowchart TD
+    S[Start] --> C1[Send Sleep CAN]
+    C1 --> W[Wait 60s]
+    W --> C2[Send Wake-up CAN]
+    C2 --> D[Delay 30s]
+    D --> ADB[ADB Connect to TBox]
+    ADB --> LOGIN[Send Credentials]
+    LOGIN --> CHECK[Check /mnt/emmc]
+    CHECK -->|Success| PASS[Log Pass]
+    CHECK -->|Failure| FAIL[Log Fail]
+    PASS --> LOOP[Next Cycle]
+    FAIL --> LOOP
+    LOOP -->|Repeat N times| C1
