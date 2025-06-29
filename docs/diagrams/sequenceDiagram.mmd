@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant CAPL Script
+    participant TBox
+    participant eMMC
+    participant Python Script
+    CAPL Script->>TBox: Send Sleep CAN Message
+    TBox->>TBox: Suspend
+    CAPL Script->>TBox: Send Wake-up CAN Message
+    TBox->>TBox: Resume
+    Python Script->>TBox: ADB Connect
+    TBox->>Python Script: Login Prompt
+    Python Script->>TBox: Send Credentials
+    TBox->>Python Script: Login Success
+    Python Script->>TBox: ls /mnt/emmc
+    TBox->>eMMC: Access Mount
+    eMMC-->>TBox: Directory Listing
+    TBox-->>Python Script: Mount Check Result
