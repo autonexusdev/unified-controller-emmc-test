@@ -37,7 +37,7 @@ To ensure that the eMMC can be reliably mounted and accessed by the TBox after e
 
 ## 🛠 Scripts Overview
 
-- `can_sleep_wake.capl`  
+- `sleep_wake_controller.can`  
   CAPL script that sends CAN messages to trigger suspend and wake-up events.
 
 - `emmc_mount_check.py`  
