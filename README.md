@@ -65,5 +65,15 @@ To ensure that the eMMC can be reliably mounted and accessed by the TBox after e
 ## 📁 Folder Structure
 📂 capl/
     └── sleep_wake_controller.can  # CAPL script for controlling suspend/wake cycles and triggering mount check
+📂 python/
+    └── adb_emmc_mount_check.py  # This script verifies whether the eMMC partition is correctly mounted after a Linux-based domain controller wakes up from sleep. Useful for automotive integration of TBox + Head Unit systems.
+
+Note:
+
+Real credentials and paths have been anonymized.
+
+Replace "your_username" and "your_password" and paths with actual values securely.
+
+Do not hardcode credentials in production environments.
 
 
