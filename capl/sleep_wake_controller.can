@@ -1,0 +1,74 @@
+/*@!Encoding:936*/
+
+/*
+  CAPL Script: Unified Controller Sleep/Wake + eMMC Mount Verification
+  Purpose:
+    1. Simulate sleep and wake cycles for a unified automotive controller (TBox + Head Unit).
+    2. After each wake-up, execute a Python script that checks if the eMMC is correctly mounted on the Linux-based TBox system.
+    3. CAN message ID and payload structure are dummy placeholders for demonstration purposes.
+*/
+
+includes
+{
+  // Optional includes (e.g., for I/O extensions)
+}
+
+variables
+{
+  int power_state = 0;                // Simulated power mode: 0 = awake, 1 = sleep
+
+  char buffer[1024];                  // Output buffer (reserved for system output if needed)
+
+  // Dummy CAN message with placeholder ID and structure
+  message 0x123 dummy_can_msg;        // Replace 0x123 with actual CAN ID if needed
+
+  // Timers for control flow
+  msTimer Timer_CAN_Cyclic;          // Cyclic CAN message output
+  msTimer Timer_Trigger_Sleep;       // Initial delay before sleep/wake loop starts
+  timer Timer_Sleep_Duration;        // Simulated sleep duration
+  timer Timer_Wake_Duration;         // Simulated wake duration
+}
+
+on start
+{
+  // Initialize timers
+  setTimerCyclic(Timer_CAN_Cyclic, 100);         // Send CAN message every 100ms
+  setTimerCyclic(Timer_Trigger_Sleep, 8000);     // Start sleep/wake cycle every 8s
+  setTimer(Timer_Sleep_Duration, 2);             // Initial short delay before sleep
+
+  // Initialize dummy CAN message
+  dummy_can_msg.fdf = 0;         // No CAN FD
+  dummy_can_msg.dlc = 8;         // Data length = 8 bytes
+  dummy_can_msg.byte(0) = power_state;   // Use byte 0 to represent power state
+}
+
+// Periodically send simulated CAN message to broadcast power state
+on timer Timer_CAN_Cyclic
+{
+  dummy_can_msg.byte(0) = power_state;   // Update current simulated power state
+  output(dummy_can_msg);                 // Transmit CAN message
+}
+
+// Simulate transition to sleep mode
+on timer Timer_Sleep_Duration
+{
+  cancelTimer(Timer_CAN_Cyclic);   // Stop CAN output during sleep
+  power_state = 1;                 // Set to sleep mode
+}
+
+// Simulate wake-up and trigger mount check script
+on timer Timer_Wake_Duration
+{
+  power_state = 0;                        // Wake up
+  setTimer(Timer_Sleep_Duration, 2);      // Prepare for next sleep cycle
+
+  // Execute Python script (runs via ADB) to check eMMC mount on Linux-based TBox
+  sysExecCmd(" python adb_nfs_mount_check.py & exit", "");
+}
+
+// Start new sleep/wake cycle
+on timer Timer_Trigger_Sleep
+{
+  setTimerCyclic(Timer_CAN_Cyclic, 100);    // Resume sending CAN messages
+  setTimer(Timer_Wake_Duration, 1);         // Start wake-up handling
+}
