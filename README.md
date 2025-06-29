@@ -63,4 +63,7 @@ To ensure that the eMMC can be reliably mounted and accessed by the TBox after e
 ---
 
 ## 📁 Folder Structure
+📂 capl/
+    └── sleep_wake_controller.can  # CAPL script for controlling suspend/wake cycles and triggering mount check
+
 
